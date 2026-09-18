@@ -17,6 +17,8 @@ function Appointments() {
   const [doctors, setDoctors] = useState([]);
 
   useEffect(() => {
+    console.log("APPOINTMENTS EFFECT RUN");
+
     api
       .get("/appointments")
       .then((response) => {
@@ -43,8 +45,10 @@ function Appointments() {
     api
       .delete(`/appointments/${id}`)
       .then(() => {
-        setAppointments(
-          appointments.filter((appointment) => appointment.id !== id)
+        setAppointments((currentAppointments) =>
+          currentAppointments.filter(
+            (appointment) => appointment.id !== id
+          )
         );
       })
       .catch(() => {
@@ -89,8 +93,8 @@ function Appointments() {
     api
       .put(`/appointments/${id}`, updatedAppointment)
       .then((response) => {
-        setAppointments(
-          appointments.map((appointment) =>
+        setAppointments((currentAppointments) =>
+          currentAppointments.map((appointment) =>
             appointment.id === id ? response.data : appointment
           )
         );

@@ -10,40 +10,34 @@ function Booking() {
 
   const doctorId = searchParams.get("doctorId");
 
+  // Zustand
   const selectedDoctor = useAppointmentStore(
     (state) => state.selectedDoctor
   );
 
-  const [doctor, setDoctor] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const initialDoctor =
+    selectedDoctor &&
+    String(selectedDoctor.id) === String(doctorId)
+      ? selectedDoctor
+      : null;
+
+  const [doctor, setDoctor] = useState(initialDoctor);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-
-  const [email, setEmail] = useState("");
 
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    mode: "onSubmit",
+  });
+
+  const loading = Boolean(doctorId) && !doctor && !error;
 
   useEffect(() => {
-    setLoading(true);
-    setError("");
-
-    if (!doctorId) {
-      setError("No doctor was selected.");
-      setLoading(false);
-      return;
-    }
-
-    if (
-      selectedDoctor &&
-      String(selectedDoctor.id) === String(doctorId)
-    ) {
-      setDoctor(selectedDoctor);
-      setLoading(false);
+    if (!doctorId || doctor) {
       return;
     }
 
@@ -51,15 +45,14 @@ function Booking() {
       .get(`/doctors/${doctorId}`)
       .then((response) => {
         setDoctor(response.data);
-        setLoading(false);
       })
       .catch(() => {
         setError("Failed to load doctor information.");
-        setLoading(false);
       });
-  }, [doctorId, selectedDoctor]);
+  }, [doctorId, doctor]);
 
   const onSubmit = (data) => {
+    setError("");
     setSuccess(false);
 
     const appointment = {
@@ -76,8 +69,6 @@ function Booking() {
       .post("/appointments", appointment)
       .then(() => {
         setSuccess(true);
-        setEmail("");
-
         navigate("/appointments");
       })
       .catch(() => {
@@ -85,6 +76,18 @@ function Booking() {
       });
   };
 
+  // No doctor selected
+  if (!doctorId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <p className="text-red-500 text-center">
+          No doctor was selected.
+        </p>
+      </div>
+    );
+  }
+
+  // Loading
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center px-6">
@@ -95,6 +98,7 @@ function Booking() {
     );
   }
 
+  // Error
   if (error && !doctor) {
     return (
       <div className="min-h-screen flex items-center justify-center px-6">
@@ -105,6 +109,7 @@ function Booking() {
     );
   }
 
+  // Doctor not found
   if (!doctor) {
     return (
       <div className="min-h-screen flex items-center justify-center px-6">
@@ -127,12 +132,14 @@ function Booking() {
           Fill in your information to book your appointment.
         </p>
 
+        {/* Success */}
         {success && (
           <div className="mt-5 sm:mt-6 p-4 rounded-xl bg-green-100 text-green-700 text-center font-medium text-sm sm:text-base">
             Appointment booked successfully!
           </div>
         )}
 
+        {/* Error */}
         {error && doctor && (
           <div className="mt-5 sm:mt-6 p-4 rounded-xl bg-red-100 text-red-600 text-center text-sm sm:text-base">
             {error}
@@ -144,6 +151,7 @@ function Booking() {
           className="mt-8 sm:mt-10 bg-white rounded-3xl shadow-md border border-[#E0F4FF] p-5 sm:p-8"
         >
 
+          {/* Doctor Information */}
           <div className="mb-6 sm:mb-7">
             <p className="text-sm text-[#68B0F2] font-medium">
               Doctor
@@ -158,7 +166,7 @@ function Booking() {
             </p>
           </div>
 
-          {/* Uncontrolled Input */}
+          {/* Patient Name - Uncontrolled Input */}
           <div>
             <label className="block text-[#184E6C] font-medium mb-2">
               Patient Name
@@ -169,6 +177,10 @@ function Booking() {
               placeholder="Enter your name"
               {...register("patientName", {
                 required: "Name is required",
+                minLength: {
+                  value: 3,
+                  message: "Name must be at least 3 characters",
+                },
               })}
               className="w-full px-4 py-3 rounded-xl border border-[#9BCBE5] outline-none focus:ring-2 focus:ring-[#68B0F2]"
             />
@@ -180,7 +192,7 @@ function Booking() {
             )}
           </div>
 
-          {/* Controlled Input */}
+          {/* Email - Controlled Input */}
           <div className="mt-5">
             <label className="block text-[#184E6C] font-medium mb-2">
               Email
@@ -201,10 +213,7 @@ function Booking() {
                   type="email"
                   placeholder="Enter your email"
                   value={field.value || ""}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    setEmail(e.target.value);
-                  }}
+                  onChange={field.onChange}
                   className="w-full px-4 py-3 rounded-xl border border-[#9BCBE5] outline-none focus:ring-2 focus:ring-[#68B0F2]"
                 />
               )}
@@ -217,6 +226,7 @@ function Booking() {
             )}
           </div>
 
+          {/* Day */}
           <div className="mt-5">
             <label className="block text-[#184E6C] font-medium mb-2">
               Select Day
@@ -232,7 +242,7 @@ function Booking() {
                 Select a day
               </option>
 
-              {doctor.workingDays.map((day) => (
+              {doctor.workingDays?.map((day) => (
                 <option key={day} value={day}>
                   {day}
                 </option>
@@ -246,6 +256,7 @@ function Booking() {
             )}
           </div>
 
+          {/* Time */}
           <div className="mt-5">
             <label className="block text-[#184E6C] font-medium mb-2">
               Select Time
@@ -261,7 +272,7 @@ function Booking() {
                 Select a time
               </option>
 
-              {doctor.availableSlots.map((slot) => (
+              {doctor.availableSlots?.map((slot) => (
                 <option key={slot} value={slot}>
                   {slot}
                 </option>
@@ -275,6 +286,7 @@ function Booking() {
             )}
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             className="w-full mt-7 sm:mt-8 py-3 rounded-xl bg-[#387EA2] text-white font-medium hover:bg-[#184E6C] transition cursor-pointer"
