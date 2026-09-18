@@ -9,6 +9,7 @@ import DoctorDetails from "./pages/DoctorDetails";
 import Booking from "./pages/Booking";
 import Appointments from "./pages/Appointments";
 import Favorites from "./pages/Favorites";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -58,6 +59,11 @@ function App() {
         <Route
           path="/favorites"
           element={<Favorites />}
+        />
+
+        <Route
+          path="/profile"
+          element={<Profile />}
         />
 
         <Route path="*" element={<NotFound />} />

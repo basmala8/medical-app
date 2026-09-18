@@ -97,6 +97,13 @@ function Navbar() {
             </Link>
 
             <Link
+              to="/profile"
+              className="text-[16px] lg:text-[17px] font-medium text-[#526B7A] dark:text-white hover:text-[#387EA2] dark:hover:text-[#8DD3FF] transition"
+            >
+              Profile
+            </Link>
+
+            <Link
               to="/appointments"
               className="px-4 lg:px-5 py-2.5 rounded-xl bg-[#184E6C] dark:bg-[#387EA2] text-white text-[14px] lg:text-[15px] font-medium hover:bg-[#387EA2] dark:hover:bg-[#68B0F2] transition whitespace-nowrap"
             >
@@ -196,6 +203,14 @@ function Navbar() {
                 className="px-4 py-3 rounded-xl text-[#526B7A] dark:text-white font-medium hover:bg-[#F0FAFE] dark:hover:bg-[#344274] transition"
               >
                 Favorites ❤️
+              </Link>
+
+              <Link
+                to="/profile"
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-3 rounded-xl text-[#526B7A] dark:text-white font-medium hover:bg-[#F0FAFE] dark:hover:bg-[#344274] transition"
+              >
+                Profile
               </Link>
 
               <Link

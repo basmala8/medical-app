@@ -35,6 +35,16 @@ const useAppointmentStore = create((set) => ({
     });
   },
 
+  profile: {
+    name: "",
+    email: "",
+    phone: "",
+  },
+
+  setProfile: (profile) => {
+    set({ profile });
+  },
+
 }));
 
 export default useAppointmentStore;
