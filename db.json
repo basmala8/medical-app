@@ -273,6 +273,18 @@
       ]
     }
   ],
-  "appointments": [],
+  "appointments": [
+    {
+      "doctorId": "1",
+      "doctorName": "Dr. Ahmed Hassan",
+      "specialty": "Cardiology",
+      "patientName": "Basmala",
+      "email": "bm5563645@gmail.com",
+      "day": "Monday",
+      "time": "12:00 PM",
+      "status": "Pending",
+      "id": "45NzcPbTBMQ"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

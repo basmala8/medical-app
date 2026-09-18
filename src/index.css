@@ -2,10 +2,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* =========================
-   GENERAL
-========================= */
-
 html {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -14,10 +10,6 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* =========================
-   DARK MODE
-========================= */
-
 html.dark,
 html.dark body {
   background-color: #111936;
@@ -25,4 +17,16 @@ html.dark body {
 
 html.dark img {
   filter: none;
+}
+
+/* Dark mode select */
+html.dark select {
+  color-scheme: dark;
+  background-color: #182142;
+  color: white;
+}
+
+html.dark select option {
+  background-color: #182142;
+  color: white;
 }
