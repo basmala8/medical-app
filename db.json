@@ -273,17 +273,6 @@
       ]
     }
   ],
-  "appointments": [
-    {
-      "doctorId": "2",
-      "doctorName": "Dr. Noah Hossam",
-      "specialty": "Cardiology",
-      "patientName": "لةةةة",
-      "email": "bm5563645@gmail.com",
-      "day": "Sunday",
-      "time": "3:00 PM",
-      "id": "HuVP4RUOSeE"
-    }
-  ],
+  "appointments": [],
   "$schema": "./node_modules/json-server/schema.json"
 }
