@@ -1,0 +1,120 @@
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import api from "../services/api";
+
+function DoctorDetails() {
+  const { id } = useParams();
+
+  const [doctor, setDoctor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    api
+      .get(`/doctors/${id}`)
+      .then((response) => {
+        setDoctor(response.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("Failed to load doctor details.");
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (loading) {
+    return (
+      <p className="p-10 text-center text-[#184E6C]">
+        Loading doctor...
+      </p>
+    );
+  }
+
+  if (error) {
+    return (
+      <p className="p-10 text-center text-red-500">
+        {error}
+      </p>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-white py-12">
+      <div className="max-w-5xl mx-auto px-6">
+
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+
+          {/* Doctor Image */}
+          <img
+            src={doctor.image}
+            alt={doctor.name}
+            className="w-full h-[450px] object-cover rounded-3xl shadow-md"
+          />
+
+          {/* Doctor Information */}
+          <div>
+
+            <p className="text-[#68B0F2] font-semibold">
+              {doctor.specialty}
+            </p>
+
+            <h1 className="text-4xl font-bold text-[#184E6C] mt-2">
+              {doctor.name}
+            </h1>
+
+            <p className="mt-5 text-gray-600 leading-8">
+              {doctor.description}
+            </p>
+
+            {/* Working Days */}
+            <div className="mt-7">
+              <h2 className="text-xl font-bold text-[#184E6C]">
+                Working Days
+              </h2>
+
+              <div className="flex flex-wrap gap-2 mt-3">
+                {doctor.workingDays.map((day) => (
+                  <span
+                    key={day}
+                    className="px-4 py-2 rounded-xl bg-[#E0F4FF] text-[#387EA2] font-medium"
+                  >
+                    {day}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Available Slots */}
+            <div className="mt-7">
+              <h2 className="text-xl font-bold text-[#184E6C]">
+                Available Slots
+              </h2>
+
+              <div className="flex flex-wrap gap-2 mt-3">
+                {doctor.availableSlots.map((slot) => (
+                  <span
+                    key={slot}
+                    className="px-4 py-2 rounded-xl bg-[#F3EEFC] text-[#184E6C] font-medium"
+                  >
+                    {slot}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Booking Button */}
+            <Link
+              to={`/booking?doctorId=${doctor.id}`}
+              className="inline-block mt-8 px-6 py-3 rounded-xl bg-[#387EA2] text-white font-medium hover:bg-[#184E6C] transition"
+            >
+              Book Appointment
+            </Link>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default DoctorDetails;

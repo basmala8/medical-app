@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Doctors from "./pages/Doctors";
+import DoctorDetails from "./pages/DoctorDetails";
+import Booking from "./pages/Booking";
+import Appointments from "./pages/Appointments";
 
 function App() {
   return (
@@ -13,14 +16,11 @@ function App() {
 
         <Route path="/doctors" element={<Doctors />} />
 
-        <Route
-          path="/appointments"
-          element={
-            <h1 className="p-10 text-4xl font-bold text-[#184E6C]">
-              My Appointments
-            </h1>
-          }
-        />
+        <Route path="/doctors/:id" element={<DoctorDetails />} />
+
+        <Route path="/booking" element={<Booking />} />
+
+        <Route path="/appointments" element={<Appointments />} />
       </Routes>
     </Router>
   );
