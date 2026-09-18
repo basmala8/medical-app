@@ -1,32 +1,67 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Controller, useForm } from "react-hook-form";
 import api from "../services/api";
+import useAppointmentStore from "../store/appointmentStore";
 
 function Booking() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
   const doctorId = searchParams.get("doctorId");
 
+  const selectedDoctor = useAppointmentStore(
+    (state) => state.selectedDoctor
+  );
+
   const [doctor, setDoctor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const [email, setEmail] = useState("");
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm();
 
   useEffect(() => {
+    setLoading(true);
+    setError("");
+
+    if (!doctorId) {
+      setError("No doctor was selected.");
+      setLoading(false);
+      return;
+    }
+
+    if (
+      selectedDoctor &&
+      String(selectedDoctor.id) === String(doctorId)
+    ) {
+      setDoctor(selectedDoctor);
+      setLoading(false);
+      return;
+    }
+
     api
       .get(`/doctors/${doctorId}`)
       .then((response) => {
         setDoctor(response.data);
+        setLoading(false);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
+        setError("Failed to load doctor information.");
+        setLoading(false);
       });
-  }, [doctorId]);
+  }, [doctorId, selectedDoctor]);
 
   const onSubmit = (data) => {
+    setSuccess(false);
+
     const appointment = {
       doctorId: doctor.id,
       doctorName: doctor.name,
@@ -40,48 +75,81 @@ function Booking() {
     api
       .post("/appointments", appointment)
       .then(() => {
-        alert("Appointment booked successfully!");
+        setSuccess(true);
+        setEmail("");
+
+        navigate("/appointments");
       })
-      .catch((error) => {
-        console.log(error);
-        alert("Failed to book appointment.");
+      .catch(() => {
+        setError("Failed to book appointment. Please try again.");
       });
   };
 
-  if (!doctor) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-[#184E6C]">
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <p className="text-[#184E6C] text-lg font-medium text-center">
           Loading doctor...
         </p>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-white py-12">
-      <div className="max-w-2xl mx-auto px-6">
+  if (error && !doctor) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <p className="text-red-500 text-center">
+          {error}
+        </p>
+      </div>
+    );
+  }
 
-        <h1 className="text-4xl font-bold text-[#184E6C] text-center">
+  if (!doctor) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <p className="text-gray-500 text-center">
+          Doctor not found.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-white py-10 sm:py-12">
+      <div className="max-w-2xl mx-auto px-5 sm:px-6">
+
+        <h1 className="text-3xl sm:text-4xl font-bold text-[#184E6C] text-center">
           Book an Appointment
         </h1>
 
-        <p className="text-center text-gray-500 mt-3">
+        <p className="text-center text-gray-500 mt-3 text-sm sm:text-base">
           Fill in your information to book your appointment.
         </p>
 
+        {success && (
+          <div className="mt-5 sm:mt-6 p-4 rounded-xl bg-green-100 text-green-700 text-center font-medium text-sm sm:text-base">
+            Appointment booked successfully!
+          </div>
+        )}
+
+        {error && doctor && (
+          <div className="mt-5 sm:mt-6 p-4 rounded-xl bg-red-100 text-red-600 text-center text-sm sm:text-base">
+            {error}
+          </div>
+        )}
+
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="mt-10 bg-white rounded-3xl shadow-md border border-[#E0F4FF] p-8"
+          className="mt-8 sm:mt-10 bg-white rounded-3xl shadow-md border border-[#E0F4FF] p-5 sm:p-8"
         >
 
-          {/* Doctor Information */}
-          <div className="mb-7">
+          <div className="mb-6 sm:mb-7">
             <p className="text-sm text-[#68B0F2] font-medium">
               Doctor
             </p>
 
-            <h2 className="text-2xl font-bold text-[#184E6C] mt-1">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#184E6C] mt-1 break-words">
               {doctor.name}
             </h2>
 
@@ -90,7 +158,7 @@ function Booking() {
             </p>
           </div>
 
-          {/* Patient Name */}
+          {/* Uncontrolled Input */}
           <div>
             <label className="block text-[#184E6C] font-medium mb-2">
               Patient Name
@@ -112,19 +180,34 @@ function Booking() {
             )}
           </div>
 
-          {/* Email */}
+          {/* Controlled Input */}
           <div className="mt-5">
             <label className="block text-[#184E6C] font-medium mb-2">
               Email
             </label>
 
-            <input
-              type="email"
-              placeholder="Enter your email"
-              {...register("email", {
+            <Controller
+              name="email"
+              control={control}
+              rules={{
                 required: "Email is required",
-              })}
-              className="w-full px-4 py-3 rounded-xl border border-[#9BCBE5] outline-none focus:ring-2 focus:ring-[#68B0F2]"
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email",
+                },
+              }}
+              render={({ field }) => (
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={field.value || ""}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setEmail(e.target.value);
+                  }}
+                  className="w-full px-4 py-3 rounded-xl border border-[#9BCBE5] outline-none focus:ring-2 focus:ring-[#68B0F2]"
+                />
+              )}
             />
 
             {errors.email && (
@@ -134,7 +217,6 @@ function Booking() {
             )}
           </div>
 
-          {/* Day */}
           <div className="mt-5">
             <label className="block text-[#184E6C] font-medium mb-2">
               Select Day
@@ -164,7 +246,6 @@ function Booking() {
             )}
           </div>
 
-          {/* Time */}
           <div className="mt-5">
             <label className="block text-[#184E6C] font-medium mb-2">
               Select Time
@@ -194,10 +275,9 @@ function Booking() {
             )}
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full mt-8 py-3 rounded-xl bg-[#387EA2] text-white font-medium hover:bg-[#184E6C] transition cursor-pointer"
+            className="w-full mt-7 sm:mt-8 py-3 rounded-xl bg-[#387EA2] text-white font-medium hover:bg-[#184E6C] transition cursor-pointer"
           >
             Book Appointment
           </button>

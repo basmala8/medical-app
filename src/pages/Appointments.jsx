@@ -104,52 +104,56 @@ function Appointments() {
 
   if (loading) {
     return (
-      <p className="p-10 text-center text-[#184E6C]">
-        Loading appointments...
-      </p>
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <p className="text-center text-[#184E6C]">
+          Loading appointments...
+        </p>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <p className="p-10 text-center text-red-500">
-        {error}
-      </p>
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <p className="text-center text-red-500">
+          {error}
+        </p>
+      </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white py-12">
-      <div className="max-w-5xl mx-auto px-6">
+    <div className="min-h-screen bg-white py-10 sm:py-12">
+      <div className="max-w-5xl mx-auto px-5 sm:px-6">
 
-        <h1 className="text-4xl font-bold text-[#184E6C] text-center">
+        <h1 className="text-3xl sm:text-4xl font-bold text-[#184E6C] text-center">
           My Appointments
         </h1>
 
         {appointments.length === 0 ? (
-          <p className="text-center mt-12 text-gray-500">
+          <p className="text-center mt-10 sm:mt-12 text-gray-500">
             No appointments found.
           </p>
         ) : (
-          <div className="grid gap-6 mt-10">
+          <div className="grid gap-5 sm:gap-6 mt-8 sm:mt-10">
 
             {appointments.map((appointment) => {
-
               const doctor = doctors.find(
-                (doctor) => String(doctor.id) === String(appointment.doctorId)
+                (doctor) =>
+                  String(doctor.id) === String(appointment.doctorId)
               );
 
               return (
                 <div
                   key={appointment.id}
-                  className="bg-white rounded-3xl border border-[#E0F4FF] shadow-sm p-6"
+                  className="bg-white rounded-3xl border border-[#E0F4FF] shadow-sm p-5 sm:p-6"
                 >
 
                   {editingId === appointment.id ? (
 
                     <div>
 
-                      <h2 className="text-2xl font-bold text-[#184E6C] mb-5">
+                      <h2 className="text-xl sm:text-2xl font-bold text-[#184E6C] mb-5">
                         Edit Appointment
                       </h2>
 
@@ -231,18 +235,18 @@ function Appointments() {
                         </select>
                       </div>
 
-                      <div className="flex gap-3 mt-6">
+                      <div className="flex flex-col sm:flex-row gap-3 mt-6">
 
                         <button
                           onClick={() => handleUpdate(appointment.id)}
-                          className="px-5 py-2.5 rounded-xl bg-[#387EA2] text-white font-medium hover:bg-[#184E6C] transition cursor-pointer"
+                          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#387EA2] text-white font-medium hover:bg-[#184E6C] transition cursor-pointer"
                         >
                           Save Changes
                         </button>
 
                         <button
                           onClick={() => setEditingId(null)}
-                          className="px-5 py-2.5 rounded-xl bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition cursor-pointer"
+                          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition cursor-pointer"
                         >
                           Cancel
                         </button>
@@ -255,7 +259,7 @@ function Appointments() {
 
                     <div>
 
-                      <h2 className="text-2xl font-bold text-[#184E6C]">
+                      <h2 className="text-xl sm:text-2xl font-bold text-[#184E6C] break-words">
                         {appointment.doctorName}
                       </h2>
 
@@ -263,16 +267,16 @@ function Appointments() {
                         {appointment.specialty}
                       </p>
 
-                      <div className="mt-5 grid sm:grid-cols-2 gap-3 text-gray-600">
+                      <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-600">
 
-                        <p>
+                        <p className="break-words">
                           <span className="font-medium text-[#184E6C]">
                             Patient:
                           </span>{" "}
                           {appointment.patientName}
                         </p>
 
-                        <p>
+                        <p className="break-all">
                           <span className="font-medium text-[#184E6C]">
                             Email:
                           </span>{" "}
@@ -295,18 +299,18 @@ function Appointments() {
 
                       </div>
 
-                      <div className="flex gap-3 mt-6">
+                      <div className="flex flex-col sm:flex-row gap-3 mt-6">
 
                         <button
                           onClick={() => handleEdit(appointment)}
-                          className="px-5 py-2.5 rounded-xl bg-[#68B0F2] text-white font-medium hover:bg-[#387EA2] transition cursor-pointer"
+                          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#68B0F2] text-white font-medium hover:bg-[#387EA2] transition cursor-pointer"
                         >
                           Edit
                         </button>
 
                         <button
                           onClick={() => handleDelete(appointment.id)}
-                          className="px-5 py-2.5 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition cursor-pointer"
+                          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition cursor-pointer"
                         >
                           Delete
                         </button>

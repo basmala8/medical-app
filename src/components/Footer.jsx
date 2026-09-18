@@ -172,7 +172,7 @@ function Footer() {
             <div className="space-y-3 text-blue-100/70">
 
               <p>Emergency: 123</p>
-              <p>carely@example.com</p>
+              <p> support@carely.com</p>
               <p>Egypt</p>
 
             </div>
