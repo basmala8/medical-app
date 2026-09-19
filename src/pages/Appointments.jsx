@@ -16,6 +16,10 @@ function Appointments() {
 
   const [doctors, setDoctors] = useState([]);
 
+  // Confirmation
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [appointmentToDelete, setAppointmentToDelete] = useState(null);
+
   useEffect(() => {
     api
       .get("/appointments")
@@ -38,16 +42,30 @@ function Appointments() {
       });
   }, []);
 
+  // Open Delete Confirmation
+  const handleDeleteClick = (id) => {
+    setAppointmentToDelete(id);
+    setShowDeleteModal(true);
+  };
+
   // Delete
-  const handleDelete = (id) => {
+  const handleDelete = () => {
+    if (!appointmentToDelete) {
+      return;
+    }
+
     api
-      .delete(`/appointments/${id}`)
+      .delete(`/appointments/${appointmentToDelete}`)
       .then(() => {
         setAppointments((currentAppointments) =>
           currentAppointments.filter(
-            (appointment) => appointment.id !== id
+            (appointment) =>
+              appointment.id !== appointmentToDelete
           )
         );
+
+        setShowDeleteModal(false);
+        setAppointmentToDelete(null);
       })
       .catch(() => {
         alert("Failed to delete appointment.");
@@ -363,7 +381,10 @@ function Appointments() {
                         </button>
 
                         <button
-                          onClick={() => handleDelete(appointment.id)}
+                          type="button"
+                          onClick={() =>
+                            handleDeleteClick(appointment.id)
+                          }
                           className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition cursor-pointer"
                         >
                           Delete
@@ -384,6 +405,48 @@ function Appointments() {
         )}
 
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-5 bg-black/50 backdrop-blur-sm">
+
+          <div className="w-full max-w-md bg-white dark:bg-[#202A52] rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#E0F4FF] dark:border-[#59638D]">
+
+            <h2 className="text-xl sm:text-2xl font-bold text-[#184E6C] dark:text-white">
+              Delete Appointment
+            </h2>
+
+            <p className="mt-3 text-gray-600 dark:text-gray-300">
+              Are you sure you want to delete this appointment?
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setAppointmentToDelete(null);
+                }}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gray-200 dark:bg-[#454B70] text-gray-700 dark:text-gray-200 font-medium hover:bg-gray-300 dark:hover:bg-[#59638D] transition cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition cursor-pointer"
+              >
+                Delete Appointment
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
 
     </div>
   );
