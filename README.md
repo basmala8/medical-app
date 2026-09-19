@@ -1,19 +1,55 @@
-# React + Vite
+# Carely 🩺
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Carely is a medical appointment booking web application built with React.
 
-Currently, two official plugins are available:
+It allows users to browse doctors, view doctor details, book appointments,
+manage appointments, save favorite doctors, and manage their profile.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- Browse medical specialties
+- Browse doctors from the API
+- Search and filter doctors
+- View doctor details
+- Book medical appointments
+- Edit and delete appointments
+- Save favorite doctors
+- Dark / Light Mode
+- Doctor availability status
+- Appointment status
+- Profile management
+- Form validation
+- Responsive design
+- Loading, error, empty, and success states
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Technologies
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+- React
+- React Router
+- Zustand
+- Axios
+- React Hook Form
+- REST API
+- JSON Server
+- Tailwind CSS
+- React Hot Toast
+- Tabler Icons
+- Vite
 
-## Expanding the ESLint configuration
+## Main Routes
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `/` — Home
+- `/doctors` — Doctors
+- `/doctors/:id` — Doctor Details
+- `/booking` — Book Appointment
+- `/appointments` — My Appointments
+- `/favorites` — Favorite Doctors
+- `/profile` — Profile
+- `*` — 404 Not Found
+
+## Getting Started
+
+### Install dependencies
+
+```bash
+npm install
