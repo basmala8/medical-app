@@ -53,3 +53,42 @@ manage appointments, save favorite doctors, and manage their profile.
 
 ```bash
 npm install
+```
+
+### Start the API
+
+```bash
+npx json-server --watch db.json --port 3000
+```
+
+### Start the React application
+
+```bash
+npm run dev
+```
+
+Then open the local URL shown in the terminal.
+
+## API
+
+The application uses JSON Server as a REST API for doctors and appointments.
+
+Axios is used to fetch, create, update, and delete appointment data.
+
+## Live Demo
+
+https://medical-app-ten-kappa.vercel.app/
+
+## GitHub
+
+Repository:
+
+https://github.com/basmala8/medical-app
+
+## Author
+
+Basmala Mohamed
+
+GitHub: https://github.com/basmala8
+
+LinkedIn: https://linkedin.com/in/basmala-mohamed-qrr
